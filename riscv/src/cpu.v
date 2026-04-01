@@ -16,7 +16,28 @@ module cpu(
 	output wire [31:0]			dbgreg_dout		// cpu register output (debugging demo)
 );
 
-// implementation goes here
+// Minimal placeholder implementation:
+// Immediately request program termination by writing to 0x30004.
+// This is NOT a functional CPU; it only ensures the design builds
+// and the simulation terminates deterministically.
+
+localparam IO_BASE   = 32'h0003_0000;
+localparam IO_STOP   = IO_BASE + 32'h4;   // 0x30004: write indicates program stop
+
+reg [31:0] addr_q;
+reg [7:0]  dout_q;
+reg        wr_q;
+reg [1:0]  state;
+
+localparam S_RESET   = 2'd0;
+localparam S_WRITE   = 2'd1;
+localparam S_IDLE    = 2'd2;
+
+assign mem_a    = addr_q;
+assign mem_dout = dout_q;
+assign mem_wr   = wr_q;
+
+assign dbgreg_dout = 32'h0;
 
 // Specifications:
 // - Pause cpu(freeze pc, registers, etc.) when rdy_in is low
